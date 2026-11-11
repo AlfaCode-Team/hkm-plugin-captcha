@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/13.2/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         failOnWarning="true"
+         failOnRisky="true"
+         cacheDirectory=".phpunit.cache">
+    <testsuites>
+        <testsuite name="Captcha">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">API</directory>
+            <directory suffix=".php">Application</directory>
+            <directory suffix=".php">Domain</directory>
+            <directory suffix=".php">Infrastructure</directory>
+        </include>
+    </source>
+    <!--
+        There is no network group here, unlike the SMS plugin. A valid captcha
+        token can only be minted by a real widget in a real browser, so there is
+        no live check a test suite could make: the vendors have no equivalent of
+        FCM's validate_only. The suite therefore asserts the exact request and
+        the verdict classification, and the README says plainly that no request
+        has reached a vendor.
+    -->
+</phpunit>

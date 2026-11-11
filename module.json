@@ -1,0 +1,46 @@
+{
+    "name": "captcha",
+    "version": "0.1.0",
+    "kernel": "^1.19.0",
+    "solves": "captcha.verification",
+    "type": "module",
+
+    "requires": [
+        "http.client"
+    ],
+
+    "exposes": [
+        "Plugins\\Captcha\\API\\Contracts\\CaptchaVerifierContract"
+    ],
+
+    "providesFilters": ["captcha"],
+
+    "routes": [],
+    "emits": [],
+    "listens": [],
+    "files": [],
+
+    "commands": [
+        {
+            "name": "captcha:status",
+            "handler": "Plugins\\Captcha\\Infrastructure\\Cli\\CaptchaStatusCommand"
+        }
+    ],
+
+    "documentation": "Server-side captcha verification behind one contract: Cloudflare Turnstile, Google reCAPTCHA (v2 and v3) and hCaptcha. Publishes the `captcha` route filter, taking the expected action as its argument (\"filters\": [\"captcha:register\"]) so a token minted for one widget cannot be spent on another route. Distinguishes a failed challenge from a spent token, a missing token, a wrong secret and a provider outage, because answering all five with one 403 either blocks real people or hides a deployment fault.",
+
+    "//default": "CAPTCHA_PROVIDER defaults to 'disabled'. Installing the plugin without configuring it must not block every protected route — the first symptom would be a sign-up form nobody can submit. A disabled provider logs a warning once per process, because a filter that silently passes everything is worse than no filter.",
+
+    "//failclosed": "CAPTCHA_FAIL_OPEN defaults to false, which is the OPPOSITE of the kernel's WafLayer and deliberate: the WAF inspects every request so failing closed takes the whole application down, while this guards a handful of named routes that carry the filter precisely because they are under attack. A misconfigured secret always blocks and is not covered by the flag.",
+
+    "config": [
+        { "key": "CAPTCHA_PROVIDER", "type": "string", "required": false, "default": "disabled" },
+        { "key": "CAPTCHA_SECRET", "type": "string", "required": false },
+        { "key": "CAPTCHA_SITE_KEY", "type": "string", "required": false },
+        { "key": "CAPTCHA_SCORE_THRESHOLD", "type": "float", "required": false, "default": 0.5 },
+        { "key": "CAPTCHA_TIMEOUT", "type": "int", "required": false, "default": 10 },
+        { "key": "CAPTCHA_FAIL_OPEN", "type": "bool", "required": false, "default": false },
+        { "key": "CAPTCHA_SEND_IP", "type": "bool", "required": false, "default": false },
+        { "key": "CAPTCHA_DENY_MESSAGE", "type": "string", "required": false }
+    ]
+}
